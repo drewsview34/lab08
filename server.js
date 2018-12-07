@@ -11,7 +11,6 @@ const pg=require('pg');
 require('dotenv').config();
 const PORT=process.env.PORT||3000;
 
-
 //setup databse
 
 const client=new pg.Client(process.env.DATABASE_URL);
