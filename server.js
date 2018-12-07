@@ -328,6 +328,81 @@ Movie.getMovieinfo=function(location){
 
 };
 
+//meetups starts here
+
+app.get('/meetups',getMeetups);
+//meetup constructor
+function Meetup(item){
+  this.link=item.link;
+  this.name=item.name;
+  this.creation=new Date(item.created*1000).toDateString();
+  this.host=item.organizer.name;
+}
+
+function getMeetups(request,response){
+  const handler={
+    location: request.query.data,
+    cacheHit: function(result){
+      response.send(result.rows);
+    },
+    cacheMiss: function(){
+      Meetup.getMeetupinfo(request.query.data)
+        .then(results=>response.send(results))
+        .catch(console.error);
+    },
+
+  };
+
+  Meetup.findMeetup(handler);
+
+}
+
+Meetup.prototype.save=function(id){
+  const SQL = `INSERT INTO meetups (link,name,creation,host,location_id) VALUES ($1,$2,$3,$4,$5);`;
+  const values=Object.values(this);
+  values.push(id);
+  client.query(SQL,values);
+};
+
+
+Meetup.findMeetup=function(handler){
+  const SQL= `SELECT * FROM meetups WHERE location_id=$1`;
+  client.query(SQL,[handler.location.id])
+    .then(result=>{
+      if(result.rowCount>0){
+        handler.cacheHit(result);
+      }
+      else{
+        handler.cacheMiss();
+      }
+    });
+   
+};
+
+
+
+Meetup.getMeetupinfo=function(location){
+
+  const url= `https://api.meetup.com/find/groups?&sign=true&photo-host=public&query=${location.search_query}&page=20&key=${process.env.MEETUP_API_KEY}`;
+  return superagent.get(url)
+    .then(resultupdate=>{
+      const meetupSummaries=resultupdate.body.map(item=>{
+
+        const summary =new Meetup(item);
+        summary.save(location.id);
+        return summary;
+      });
+      return meetupSummaries;
+    });
+
+};
+
+//trail starts here
+app.get('/trail',getTrails);
+
+
+
+
 
 
 
