@@ -398,11 +398,79 @@ Meetup.getMeetupinfo=function(location){
 };
 
 //trail starts here
-app.get('/trail',getTrails);
+app.get('/trails',getTrails);
+//trail constructor
+function Trail(item){
+  this.name=item.name;
+  this.location=item.location;
+  this.length=item.length
+  this.stars=item.stars;
+  this.star_votes=item.starVotes;
+  this.summary=item.summary;
+  this.trail_url=item.url;
+  this.conditions=item.conditionDetails;
+  this.condition_date=item.conditionDate;
+  this.condition_time=new Date(item.conditionDate*1000).toDateString();
+}
 
 
+function getTrails(request,response){
+  const handler={
+    location: request.query.data,
+    cacheHit: function(result){
+      response.send(result.rows);
+    },
+    cacheMiss: function(){
+      Trail.getTrailinfo(request.query.data)
+        .then(results=>response.send(results))
+        .catch(console.error);
+    },
+
+  };
+
+  Trail.findTrail(handler);
+
+}
 
 
+Trail.prototype.save=function(id){
+  const SQL = `INSERT INTO trails (name,location,length,stars,star_votes,summary,trail_url,conditions,condition_date,condition_time,location_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`;
+  const values=Object.values(this);
+  values.push(id);
+  client.query(SQL,values);
+};
+
+
+Trail.findTrail=function(handler){
+  const SQL= `SELECT * FROM trails WHERE location_id=$1`;
+  client.query(SQL,[handler.location.id])
+    .then(result=>{
+      if(result.rowCount>0){
+        handler.cacheHit(result);
+      }
+      else{
+        handler.cacheMiss();
+      }
+    });
+   
+};
+
+
+Trail.getTrailinfo=function(location){
+
+  const url= `https://www.hikingproject.com/data/get-trails?lat=${location.latitude}&lon=${location.longitude}&maxDistance=10&key=${process.env.Trail_API_KEY}`;
+  return superagent.get(url)
+    .then(resultupdate=>{
+      const trailSummaries=resultupdate.body.trails.map(item=>{
+
+        const summary =new Trail(item);
+        summary.save(location.id);
+        return summary;
+      });
+      return trailSummaries;
+    });
+
+};
 
 
 

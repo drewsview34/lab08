@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS weathers;
 DROP TABLE IF EXISTS yelps;
 DROP TABLE IF EXISTS movies;
 DROP TABLE IF EXISTS meetups;
+DROP TABLE IF EXISTS trails;
 
 
 
@@ -56,4 +57,22 @@ host VARCHAR(255),
 location_id INTEGER NOT NULL,
 FOREIGN KEY (location_id) REFERENCES locations(id)
 );
+
+CREATE TABLE trails(
+name VARCHAR(255),
+location VARCHAR(255),
+length VARCHAR(255),
+stars VARCHAR(255),
+stars_votes VARCHAR(255),
+summary VARCHAR(255),
+trail_url VARCHAR(255),
+conditions VARCHAR(255),
+condition_date VARCHAR(255),
+condition_time VARCHAR(255),
+location_id INTEGER NOT NULL,
+FOREIGN KEY (location_id) REFERENCES locations(id)
+);
+
+
+
 
