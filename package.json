@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xialiu1988/lab08.git"
+    "url": "https://github.com/drewsview34/lab08.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xialiu1988/lab08/issues"
+    "url": "https://github.com/drewsview34/lab08/issues"
   },
-  "homepage": "https://github.com/xialiu1988/lab08#readme",
+  "homepage": "https://github.com/drewsview34/lab08#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",

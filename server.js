@@ -232,7 +232,7 @@ Yelp.findYelp=function(handler){
         handler.cacheMiss();
       }
     });
-   
+
 };
 
 
@@ -307,7 +307,7 @@ Movie.findMovie=function(handler){
         handler.cacheMiss();
       }
     });
-   
+
 };
 
 
@@ -376,7 +376,7 @@ Meetup.findMeetup=function(handler){
         handler.cacheMiss();
       }
     });
-   
+
 };
 
 
@@ -452,7 +452,7 @@ Trail.findTrail=function(handler){
         handler.cacheMiss();
       }
     });
-   
+
 };
 
 
